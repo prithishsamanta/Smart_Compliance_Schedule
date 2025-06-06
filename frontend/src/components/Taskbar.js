@@ -4,10 +4,10 @@ import "./Taskbar.css";
 function Taskbar() {
   return (
     <nav className="taskbar">
-      <Link to="/">Home</Link>| {" "}
+      {/* <Link to="/">Home</Link>| {" "}
       <Link to="/tasks">View Tasks</Link> |      {" "}
       <Link to="/add">Add Tasks</Link> | {" "}
-      <Link to="/calendar">View Calendar</Link>
+      <Link to="/calendar">View Calendar</Link> */}
     </nav>
   );
 }
