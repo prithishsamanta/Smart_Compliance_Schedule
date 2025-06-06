@@ -109,6 +109,32 @@
     display: none; /* Hides the time label inside event blocks */
   }
   
+  /* Limit the height of the event container in month view cells */
+  .rbc-month-view .rbc-row-segment {
+    max-height: 70px; /* Adjust as needed */
+    overflow-y: auto;
+    position: relative;
+  }
+  
+  /* Make the event list inside each cell scrollable */
+  .rbc-event {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 2px;
+    cursor: pointer;
+  }
+  
+  /* Optional: show a scrollbar only when needed */
+  .rbc-month-view .rbc-row-segment::-webkit-scrollbar {
+    height: 6px;
+    background: #f2f2f2;
+  }
+  .rbc-month-view .rbc-row-segment::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 3px;
+  }
+  
   /* Responsive: makes sure it looks good on mobile */
   @media (max-width: 800px) {
     .calendar-card {
