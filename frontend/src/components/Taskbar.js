@@ -3,12 +3,14 @@ import "../styles/Taskbar.css";
 
 function Taskbar() {
   return (
-    <nav className="taskbar">
-      <Link to="/">Home</Link>| {" "}
-      <Link to="/viewTask">View Tasks</Link> | {" "}
-      <Link to="/addTask">Add Tasks</Link> | {" "}
-      <Link to="/viewCalendar">View Calendar</Link>
-    </nav>
+    <div className="taskbar-container">
+      <nav className="taskbar">
+        <Link className="taskbar-link" to="/">Home</Link>| {" "}
+        <Link className="taskbar-link" to="/viewTask">View Tasks</Link> | {" "}
+        <Link className="taskbar-link" to="/addTask">Add Tasks</Link> | {" "}
+        <Link className="taskbar-link" to="/viewCalendar">View Calendar</Link>
+      </nav>
+    </div>
   );
 }
 
