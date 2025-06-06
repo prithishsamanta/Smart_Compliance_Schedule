@@ -1,0 +1,25 @@
+/* Taskbar.css */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
+
+.taskbar {
+    margin-bottom: 20px;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+    background-color: #222;
+    color: #fff;
+}
+
+.taskbar a {
+    color: #fff;
+    margin-right: 15px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.taskbar a:hover {
+    text-decoration: underline;
+}
+
+body {
+    font-family: 'Nunito', Arial, Helvetica, sans-serif;
+}
