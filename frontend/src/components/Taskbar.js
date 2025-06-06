@@ -5,9 +5,9 @@ function Taskbar() {
   return (
     <nav className="taskbar">
       <Link to="/">Home</Link>| {" "}
-      <Link to="/viewTask">View Tasks</Link> |      {" "}
-      {/* <Link to="/add">Add Tasks</Link> | {" "}
-      <Link to="/calendar">View Calendar</Link> */}
+      <Link to="/viewTask">View Tasks</Link> | {" "}
+      <Link to="/addTask">Add Tasks</Link> | {" "}
+      {/* <Link to="/calendar">View Calendar</Link> */}
     </nav>
   );
 }
