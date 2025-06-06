@@ -11,6 +11,17 @@ function TaskListPage() {
     { id: 4, heading: "Update Docs", dueDate: "2024-06-10", status: "In Progress", priority: 1 }
   ];
 
+  const STATUS_OPTIONS = ["In Progress", "Completed", "Over Due"];
+  const [tasksState, setTasksState] = React.useState(tasks);
+
+  function handleStatusChange(taskId, newStatus) {
+    setTasksState(prev =>
+      prev.map(task =>
+        task.id === taskId ? { ...task, status: newStatus } : task
+      )
+    );
+  }
+
   // Group tasks by status
   const grouped = {
     "In Progress": [],
@@ -18,8 +29,8 @@ function TaskListPage() {
     "Completed": []
   };
 
-  // Group tasks by status
-  tasks.forEach(task => grouped[task.status].push(task));
+  // Group tasks by status using tasksState
+  tasksState.forEach(task => grouped[task.status].push(task));
 
   // Sort tasks by priority
   Object.keys(grouped).forEach(status => {
@@ -39,7 +50,20 @@ function TaskListPage() {
                             <li key={task.id}>
                             <strong>{task.heading}</strong> <br />
                             Due: {task.dueDate} <br />
-                            Priority: {task.priority}
+                            Priority: {task.priority} <br />
+                            <div className="status-changer-container">
+                                <select
+                                value={task.status}
+                                onChange={e => handleStatusChange(task.id, e.target.value)}
+                                className="status-changer"
+                                >
+                                {STATUS_OPTIONS.map(statusOption => (
+                                    <option key={statusOption} value={statusOption}>
+                                    {statusOption}
+                                    </option>
+                                ))}
+                                </select>
+                            </div>
                           </li>
                         ))}
                     </ul>
