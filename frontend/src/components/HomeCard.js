@@ -12,7 +12,7 @@ function HomeCard({ task }) {
                 <p>View all the tasks that were due for today</p>
             </Link>
                 
-            <Link to="/add" className="card">
+            <Link to="/addTask" className="card">
                 <i className="fas fa-briefcase"></i>
                 <h2>Add New Tasks</h2>
                 <p>Add new tasks to the list</p>
