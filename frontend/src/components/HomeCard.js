@@ -6,7 +6,7 @@ import './HomeCard.css';
 function HomeCard({ task }) {
     return (
         <div className="cards-grid">
-            <Link to="/tasks" className="card">
+            <Link to="/viewTask" className="card">
                 <i className="fas fa-graduation-cap"></i>
                 <h2>View Todays Tasks</h2>
                 <p>View all the tasks that were due for today</p>
