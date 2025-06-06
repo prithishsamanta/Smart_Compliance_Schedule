@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardContent, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
-import './HomeCard.css';
+import '../styles/HomeCard.css';
 
 function HomeCard({ task }) {
     return (
@@ -18,7 +18,7 @@ function HomeCard({ task }) {
                 <p>Add new tasks to the list</p>
             </Link>
             
-            <Link to="/calendar" className="card">
+            <Link to="/viewCalendar" className="card">
                 <i className="fas fa-star"></i>
                 <h2>View Calendar</h2>
                 <p>View the calendar to see the tasks</p>

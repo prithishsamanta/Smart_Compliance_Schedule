@@ -1,0 +1,127 @@
+.calender-page {
+    padding: 5px;
+}
+
+.calender-heading {
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-size: 2rem;
+  }
+
+  /* Container for the calendar page */
+.calendar-page-container {
+    min-height: 100vh;
+    background: #f8f9fa;
+    padding: 32px 0;
+  }
+  
+  /* Calendar card styling */
+  .calendar-card {
+    margin: 0 auto;
+    max-width: 1200px;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 6px 30px 0 rgba(0,0,0,0.10), 0 1.5px 5px 0 rgba(0,0,0,0.09);
+    padding: 36px 28px 40px 28px;
+  }
+  
+  /* Center the title */
+  .calendar-title {
+    text-align: center;
+    margin: 24px 0 36px 0;
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #214067;
+    letter-spacing: 0.5px;
+  }
+  
+  /* react-big-calendar overrides */
+  .rbc-calendar {
+    background: #fff;
+    border-radius: 10px;
+  }
+  
+  .rbc-toolbar {
+    font-size: 1.1rem;
+    margin-bottom: 18px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 18px;
+  }
+  
+  .rbc-toolbar button {
+    background: #e7ecfa;
+    color: #214067;
+    border: none;
+    padding: 6px 15px;
+    border-radius: 5px;
+    font-weight: 600;
+    transition: background 0.2s, color 0.2s;
+    margin-right: 8px;
+  }
+  
+  .rbc-toolbar button:active, .rbc-toolbar button.rbc-active {
+    background: #214067;
+    color: #fff;
+  }
+  
+  .rbc-month-view, .rbc-time-view {
+    border-radius: 12px;
+  }
+  
+  .rbc-month-row + .rbc-month-row {
+    border-top: 1px solid #ececec;
+  }
+  
+  .rbc-header {
+    padding: 6px 0;
+    color: #214067;
+    font-weight: bold;
+    background: #f2f6ff;
+    border: none;
+    font-size: 1.07rem;
+  }
+  
+  .rbc-date-cell {
+    font-size: 1rem;
+  }
+  
+  .rbc-today {
+    background: #fffbe7;
+  }
+  
+  .rbc-selected {
+    background: #f9ecf5 !important;
+  }
+  
+  .rbc-event {
+    border-radius: 8px;
+    padding: 2px 8px;
+    font-size: 0.98rem;
+    font-weight: 500;
+    border: none;
+    margin-bottom: 2px;
+  }
+  
+  .rbc-event-label {
+    display: none; /* Hides the time label inside event blocks */
+  }
+  
+  /* Responsive: makes sure it looks good on mobile */
+  @media (max-width: 800px) {
+    .calendar-card {
+      max-width: 97vw;
+      padding: 8px;
+    }
+    .calendar-title {
+      font-size: 1.2rem;
+      margin: 12px 0 18px 0;
+    }
+    .rbc-toolbar {
+      gap: 8px;
+      font-size: 0.98rem;
+    }
+  }
+  
