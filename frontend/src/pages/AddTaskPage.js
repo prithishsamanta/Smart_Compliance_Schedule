@@ -2,51 +2,80 @@ import React from "react";
 import "../styles/AddTaskPage.css";
 import { Card, CardContent, Typography } from '@mui/material';
 import { useState } from "react";
+import { TaskService } from "../services/TaskService";
+import { useNavigate } from "react-router-dom";
 
 const STATUS_OPTIONS = ["In Progress", "Completed", "Over Due"];
 const PRIORITY_OPTIONS = Array.from({ length: 9 }, (_, i) => i + 1);
 
 function AddTaskPage() {
+  const navigate = useNavigate();
   // State for each field in the form
   const [heading, setHeading] = useState("");
   const [description, setDescription] = useState("");
   const [dueDate, setDueDate] = useState("");
+  const [dueTime, setDueTime] = useState("12:00");
   const [status, setStatus] = useState(STATUS_OPTIONS[0]);
   const [priority, setPriority] = useState(1);
   const [file, setFile] = useState(null);
-  const [people, setPeople] = useState([]);
+  const [people, setPeople] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const today = new Date().toISOString().split('T')[0];
-  // You can expand this later to include file uploads, people involved, etc.
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    // For now, just log the result or alert; later you will send to backend
-    const peopleList = people.split(",").map(email => email.trim()).filter(Boolean);
-    alert(`Task added:\nHeading: ${heading}\nDescription: ${description}\nFile: ${file}\nDue: ${dueDate}\nStatus: ${status}\nPriority: ${priority}\nPeople: ${peopleList.join(", ")}`);
-    // Reset form (optional)
-    setHeading("");
-    setDescription("");
-    setDueDate("");
-    setFile(null);
-    setPeople([]);
-    setStatus(STATUS_OPTIONS[0]);
-    setPriority(1);
+    setError("");
+    setLoading(true);
+
+    try {
+      const peopleList = people.split(",").map(email => email.trim()).filter(Boolean);
+      
+      const taskData = {
+        heading,
+        description,
+        dueDate,
+        dueTime,
+        status,
+        priority,
+        people: peopleList
+      };
+
+      const savedTask = await TaskService.createTask(taskData, file);
+      console.log('Task created:', savedTask);
+      
+      // Reset form
+      setHeading("");
+      setDescription("");
+      setDueDate("");
+      setDueTime("12:00");
+      setFile(null);
+      setPeople("");
+      setStatus(STATUS_OPTIONS[0]);
+      setPriority(1);
+
+      // Navigate to task list or show success message
+      navigate('/viewTask');
+    } catch (err) {
+      setError(err.message || 'Failed to create task');
+      console.error('Error creating task:', err);
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
     <div className="add-task-page">
       <h2 className="task-list-heading">Add New Tasks</h2>
+      {error && <div className="error-message">{error}</div>}
       <form className="add-task-form" onSubmit={handleSubmit}>
         <label className="add-task-form-label">
           Heading:
           <input
             type="text"
             value={heading}
-            onChange={e => {
-                setHeading(e.target.value);
-                console.log(e.target.value);
-            }}
+            onChange={e => setHeading(e.target.value)}
             required
           />
         </label>
@@ -71,7 +100,6 @@ function AddTaskPage() {
           />
         </label>
 
-
         <label className="add-task-form-label">
           Due Date:
           <input
@@ -79,6 +107,16 @@ function AddTaskPage() {
             value={dueDate}
             min={today}
             onChange={e => setDueDate(e.target.value)}
+            required
+          />
+        </label>
+
+        <label className="add-task-form-label">
+          Due Time:
+          <input
+            type="time"
+            value={dueTime}
+            onChange={e => setDueTime(e.target.value)}
             required
           />
         </label>
@@ -109,7 +147,9 @@ function AddTaskPage() {
             ))}
           </select>
         </label>
-        <button type="submit">Add Task</button>
+        <button type="submit" disabled={loading}>
+          {loading ? 'Adding Task...' : 'Add Task'}
+        </button>
       </form>
     </div>
   );
