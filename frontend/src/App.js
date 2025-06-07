@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import AddTaskPage from './pages/AddTaskPage';
 import TaskListPage from './pages/TaskListPage';
-import CalenderPage from './pages/CalendarPage';
+import CalendarPage from './pages/CalendarPage';
 import Taskbar from './components/Taskbar';
 // import { TaskProvider } from './context/TaskContext';
 import './App.css';
@@ -19,7 +19,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/addTask" element={<AddTaskPage />} />
           <Route path="/viewTask" element={<TaskListPage />} />
-          <Route path="/viewCalendar" element={<CalenderPage />} />
+          <Route path="/viewCalendar" element={<CalendarPage />} />
         </Routes>
       </main>
     </>
