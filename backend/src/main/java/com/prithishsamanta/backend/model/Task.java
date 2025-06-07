@@ -20,8 +20,15 @@ public class Task {
     @Column(name = "description", nullable = false)
     private String description;
 
-    @Column(name = "fileName", nullable = false)
+    @Column(name = "file_name")
     private String fileName;
+
+    @Column(name = "file_type")
+    private String fileType;
+
+    @Lob
+    @Column(name = "file_data")
+    private byte[] fileData;
 
     @Column(name = "due_date", nullable = false)
     private LocalDate dueDate;
@@ -77,6 +84,22 @@ public class Task {
 
     public String getFileName() {
         return fileName;
+    }
+
+    public String getFileType() {
+        return fileType;
+    }
+
+    public void setFileType(String fileType) {
+        this.fileType = fileType;
+    }
+
+    public byte[] getFileData() {
+        return fileData;
+    }
+
+    public void setFileData(byte[] fileData) {
+        this.fileData = fileData;
     }
     
     public void setDueDate(LocalDate dueDate) {

@@ -1,13 +1,16 @@
 package com.prithishsamanta.backend.controller;
 
 import org.springframework.web.bind.annotation.RestController;
-
 import com.prithishsamanta.backend.model.Task;
 import com.prithishsamanta.backend.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.multipart.MultipartFile;
+import java.io.IOException;
 import java.util.List;
+import java.time.LocalDate;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
 @RequestMapping("/api/tasks")
@@ -17,18 +20,37 @@ public class TaskController {
     @Autowired
     private TaskRepository taskRepository;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @GetMapping
     public List<Task> getAllTasks(){
         return taskRepository.findAll();
     }
 
-    @PostMapping
-    public Task createTask(@RequestBody Task task){
-        return taskRepository.save(task);
+    // infroms spring that this endpoint accepts multipart/form-data which is used to upload files
+    @PostMapping(consumes = "multipart/form-data")
+    public ResponseEntity<?> createTask(
+            @RequestParam("task") String taskJson,
+            @RequestParam(value = "file", required = false) MultipartFile file) {
+        try {
+            Task task = objectMapper.readValue(taskJson, Task.class);
+            
+            if (file != null && !file.isEmpty()) {
+                task.setFileName(file.getOriginalFilename());
+                task.setFileType(file.getContentType());
+                task.setFileData(file.getBytes());
+            }
+            
+            Task savedTask = taskRepository.save(task);
+            return ResponseEntity.ok(savedTask);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error creating task: " + e.getMessage());
+        }
     }
 
     @GetMapping("/{id}")
-    public Task getTaskById(@PathVariable int id){
+    public Task getTaskById(@PathVariable Long id){
         return taskRepository.findById(id).orElse(null);
     }
 
@@ -46,10 +68,9 @@ public class TaskController {
         task.setDescription(updatedTask.getDescription());
         task.setDueDate(updatedTask.getDueDate());
         task.setDueTime(updatedTask.getDueTime());
-        task.setPeopleInvolved(updatedTask.getPeopleInvolved());
+        task.setPeople(updatedTask.getPeople());
         task.setPriority(updatedTask.getPriority());
         task.setStatus(updatedTask.getStatus());
-        task.setFileName(updatedTask.getFileName());
         return taskRepository.save(task);
     }
 
