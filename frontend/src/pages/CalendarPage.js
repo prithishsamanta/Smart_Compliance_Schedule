@@ -64,19 +64,48 @@ function CalendarPage() {
     }
   }
 
+  const handleStatusChange = (updatedTask) => {
+    setTasks(prevTasks => 
+      prevTasks.map(task => 
+        task.id === updatedTask.id ? updatedTask : task
+      )
+    );
+  };
+
   // Convert tasks to events format for the calendar
-  const events = tasks.map(task => ({
-    id: task.id,
-    title: task.heading,
-    start: new Date(task.dueDate + 'T' + task.dueTime), // Combine date and time
-    end: new Date(task.dueDate + 'T' + task.dueTime),   // Same as start for now
-    description: task.description,
-    fileName: task.fileName,
-    fileType: task.fileType,
-    status: task.status,
-    priority: task.priority,
-    people: task.people
-  }));
+  const events = tasks.map(task => {
+    // Create a valid date string by combining date and time
+    const dateStr = task.dueDate ? task.dueDate.toString() : '';
+    const timeStr = task.dueTime ? task.dueTime.toString() : '00:00:00';
+    
+    // Create the date object only if we have a valid date
+    let dueDate = null;
+    
+    if (dateStr) {
+      try {
+        // Parse the date and time
+        const [year, month, day] = dateStr.split('-').map(Number);
+        const [hours, minutes] = timeStr.split(':').map(Number);
+        
+        dueDate = new Date(year, month - 1, day, hours, minutes);
+      } catch (error) {
+        console.error('Error parsing date:', error);
+      }
+    }
+
+    return {
+      id: task.id,
+      title: task.heading,
+      start: dueDate || new Date(), // The due date/time of the task
+      end: dueDate || new Date(),   // Same as start since tasks are due at a specific time
+      description: task.description,
+      fileName: task.fileName,
+      fileType: task.fileType,
+      status: task.status,
+      priority: task.priority,
+      people: task.people
+    };
+  }).filter(event => event.start && event.end); // Filter out any events with invalid dates
 
   if (loading) {
     return <div className="loading">Loading tasks...</div>;
@@ -107,7 +136,11 @@ function CalendarPage() {
         />
       </div>
       {selectedEvent && (
-        <EventCard event={selectedEvent} onClose={() => setSelectedEvent(null)} />
+        <EventCard 
+          event={selectedEvent} 
+          onClose={() => setSelectedEvent(null)}
+          onStatusChange={handleStatusChange}
+        />
       )}
     </div>
   );
