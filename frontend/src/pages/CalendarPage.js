@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Taskbar from "../components/Taskbar";
 import { Calendar, dateFnsLocalizer } from "react-big-calendar";
 import { format, parse, startOfWeek, getDay } from "date-fns";
@@ -6,6 +6,7 @@ import enUS from "date-fns/locale/en-US";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "../styles/CalendarPage.css";
 import EventCard from "../components/EventCard";
+import { TaskService } from "../services/TaskService";
 
 const locales = {
   "en-US": enUS,
@@ -18,52 +19,6 @@ const localizer = dateFnsLocalizer({
   getDay,
   locales,
 });
-
-const tasks = [
-  {
-    id: 1,
-    heading: "Submit Report",
-    description: "End of quarter financials",
-    file: "financials.pdf",
-    dueDate: "2025-06-07T10:00:00",
-    status: "In Progress",
-    priority: 1,
-    peopleList: ["user1@example.com", "user2@example.com"]
-  },
-  {
-    id: 2,
-    heading: "Review Audit",
-    description: "Annual audit review",
-    file: "audit.docx",
-    dueDate: "2025-06-08T09:00:00",
-    status: "Completed",
-    priority: 2,
-    peopleList: ["user3@example.com"]
-  },
-  {
-    id: 3,
-    heading: "Finish Training",
-    description: "Complete compliance training",
-    file: "training.pdf",
-    dueDate: "2025-06-08T14:00:00",
-    status: "Over Due",
-    priority: 3,
-    peopleList: ["user4@example.com", "user5@example.com"]
-  }
-];
-
-// Map tasks to events for calendar
-const events = tasks.map(task => ({
-  id: task.id,
-  title: task.heading,
-  start: new Date(task.dueDate),
-  end: new Date(task.dueDate),
-  description: task.description,
-  file: task.file,
-  status: task.status,
-  priority: task.priority,
-  people: task.peopleList
-}));
 
 function eventStyleGetter(event) {
   let bgColor = "#3174ad";
@@ -88,7 +43,48 @@ function CustomEvent({ event }) {
 }
 
 function CalendarPage() {
+  const [tasks, setTasks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [selectedEvent, setSelectedEvent] = useState(null);
+
+  useEffect(() => {
+    fetchTasks();
+  }, []);
+
+  async function fetchTasks() {
+    try {
+      const fetchedTasks = await TaskService.getAllTasks();
+      setTasks(fetchedTasks);
+    } catch (err) {
+      setError(err.message || 'Failed to fetch tasks');
+      console.error('Error fetching tasks:', err);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  // Convert tasks to events format for the calendar
+  const events = tasks.map(task => ({
+    id: task.id,
+    title: task.heading,
+    start: new Date(task.dueDate + 'T' + task.dueTime), // Combine date and time
+    end: new Date(task.dueDate + 'T' + task.dueTime),   // Same as start for now
+    description: task.description,
+    fileName: task.fileName,
+    fileType: task.fileType,
+    status: task.status,
+    priority: task.priority,
+    people: task.people
+  }));
+
+  if (loading) {
+    return <div className="loading">Loading tasks...</div>;
+  }
+
+  if (error) {
+    return <div className="error-message">{error}</div>;
+  }
 
   return (
     <div className="calendar-page-container">
