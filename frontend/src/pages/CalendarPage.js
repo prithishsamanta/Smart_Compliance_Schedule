@@ -125,7 +125,7 @@ function CalendarPage() {
           startAccessor="start"
           endAccessor="end"
           titleAccessor="title"
-          style={{ height: 500 }}
+          style={{ height: 600 }}
           eventPropGetter={eventStyleGetter}
           popup={true}
           views={["month", "week", "day"]}

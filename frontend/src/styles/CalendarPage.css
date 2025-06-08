@@ -11,7 +11,7 @@
 
   /* Container for the calendar page */
 .calendar-page-container {
-    min-height: 100vh;
+    min-height: 150vh;
     background: #f8f9fa;
     padding: 32px 0;
   }
@@ -99,7 +99,7 @@
   .rbc-event {
     border-radius: 8px;
     padding: 2px 8px;
-    font-size: 0.98rem;
+    font-size: 0.90rem;
     font-weight: 500;
     border: none;
     margin-bottom: 2px;

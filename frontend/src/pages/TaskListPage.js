@@ -47,9 +47,19 @@ function TaskListPage() {
   // Format date and time for display
   const formatDateTime = (dateStr, timeStr) => {
     try {
-      const date = new Date(dateStr);
-      const time = timeStr || '00:00:00';
-      return `${date.toLocaleDateString()} at ${time}`;
+      // Parse the date string as UTC to avoid timezone issues
+      const dateParts = dateStr.split("-");
+      const year = parseInt(dateParts[0], 10);
+      const month = parseInt(dateParts[1], 10) - 1; // Month is zero-based
+      const day = parseInt(dateParts[2], 10);
+
+      const timeParts = timeStr ? timeStr.split(":") : ["00", "00", "00"];
+      const hours = parseInt(timeParts[0], 10);
+      const minutes = parseInt(timeParts[1], 10);
+      const seconds = parseInt(timeParts[2], 10);
+
+      const date = new Date(Date.UTC(year, month, day, hours, minutes, seconds));
+      return `${date.toLocaleDateString()} at ${date.toLocaleTimeString()}`;
     } catch (error) {
       return `${dateStr} at ${timeStr}`;
     }
