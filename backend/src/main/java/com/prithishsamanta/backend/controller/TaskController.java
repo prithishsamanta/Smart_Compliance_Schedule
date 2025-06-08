@@ -8,8 +8,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.stream.Collectors;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
@@ -22,6 +25,44 @@ public class TaskController {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    // @GetMapping("/currentDate")
+    // public List<Task> getTasksByCurrentDate(){
+    //     try {
+    //         LocalDate today = LocalDate.now();
+    //         System.out.println("Current date: " + today);
+            
+    //         List<Task> allTasks = taskRepository.findAll();
+    //         List<Task> todayTasks = new ArrayList<>();
+            
+    //         for (Task task : allTasks) {
+    //             if (task.getDueDate() != null && task.getDueDate().equals(today)) {
+    //                 System.out.println("Found task for today: " + task.getHeading() + " with due date: " + task.getDueDate());
+    //                 todayTasks.add(task);
+    //             }
+    //         }
+            
+    //         System.out.println("Total tasks found for today: " + todayTasks.size());
+    //         return todayTasks;
+    //     } catch(Exception e) {
+    //         System.out.println("Error in getTasksByCurrentDate: " + e.getMessage());
+    //         e.printStackTrace();
+    //         return new ArrayList<>();
+    //     }
+    // }
+
+    @GetMapping("/dueDate")
+    public List<Task> getTasksByDueDate() {
+        LocalDate today = LocalDate.now();
+        List<Task> allTasks = taskRepository.findAll();
+        List<Task> todayTasks = new ArrayList<>();
+        for (Task task : allTasks) {
+            if (task.getDueDate() != null && task.getDueDate().equals(today)) {
+                todayTasks.add(task);
+            }
+        }
+        return todayTasks;
+    }
 
     @GetMapping
     public List<Task> getAllTasks(){
@@ -47,16 +88,6 @@ public class TaskController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error creating task: " + e.getMessage());
         }
-    }
-
-    @GetMapping("/{id}")
-    public Task getTaskById(@PathVariable Long id){
-        return taskRepository.findById(id).orElse(null);
-    }
-
-    @GetMapping("/dueDate/{dueDate}")
-    public List<Task> getTasksByDueDate(@PathVariable LocalDate dueDate){
-        return taskRepository.findByDueDate(dueDate);
     }
 
     @PutMapping("/{id}")

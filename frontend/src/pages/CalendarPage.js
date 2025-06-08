@@ -96,8 +96,8 @@ function CalendarPage() {
     return {
       id: task.id,
       title: task.heading,
-      start: dueDate || new Date(), // The due date/time of the task
-      end: dueDate || new Date(),   // Same as start since tasks are due at a specific time
+      start: dueDate || new Date(), 
+      end: dueDate || new Date(),   
       description: task.description,
       fileName: task.fileName,
       fileType: task.fileType,
@@ -105,7 +105,7 @@ function CalendarPage() {
       priority: task.priority,
       people: task.people
     };
-  }).filter(event => event.start && event.end); // Filter out any events with invalid dates
+  }).filter(event => event.start && event.end); // Filters out any events with invalid dates
 
   if (loading) {
     return <div className="loading">Loading tasks...</div>;

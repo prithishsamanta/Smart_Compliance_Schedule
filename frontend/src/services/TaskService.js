@@ -13,6 +13,18 @@ export const TaskService = {
         }
     },
 
+    getTasksByCurrentDate: async () => {
+        try {
+            const response = await fetch(`${API_URL}/dueDate`);
+            if (!response.ok) throw new Error('Failed to fetch tasks by current date');
+            return await response.json();
+        }
+        catch(error){
+            console.error('Error fetching tasks by current date:', error);
+            throw error;
+        }
+    },
+
     // Create a new task with file
     createTask: async (taskData, file) => {
         try {

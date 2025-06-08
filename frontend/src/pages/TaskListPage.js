@@ -15,11 +15,11 @@ function TaskListPage() {
 
   async function fetchTasks() {
     try {
-      const fetchedTasks = await TaskService.getAllTasks();
+      const fetchedTasks = await TaskService.getTasksByCurrentDate();
       setTasks(fetchedTasks);
     } catch (err) {
       setError(err.message || 'Failed to fetch tasks');
-      console.error('Error fetching tasks:', err);
+      setLoading(false);
     } finally {
       setLoading(false);
     }
@@ -43,6 +43,17 @@ function TaskListPage() {
       console.error('Error updating task:', err);
     }
   }
+
+  // Format date and time for display
+  const formatDateTime = (dateStr, timeStr) => {
+    try {
+      const date = new Date(dateStr);
+      const time = timeStr || '00:00:00';
+      return `${date.toLocaleDateString()} at ${time}`;
+    } catch (error) {
+      return `${dateStr} at ${timeStr}`;
+    }
+  };
 
   // Group tasks by status
   const grouped = {
@@ -71,7 +82,6 @@ function TaskListPage() {
     return <div className="error-message">{error}</div>;
   }
 
-  // Render the page
   return (
     <div className="task-list-page">
       <h2 className="task-list-heading">Today's Tasks</h2>
@@ -84,7 +94,7 @@ function TaskListPage() {
                 <li key={task.id} className="task-item">
                   <strong>{task.heading}</strong>
                   <p>{task.description}</p>
-                  <p>Due: {task.dueDate} at {task.dueTime}</p>
+                  <p>Due: {formatDateTime(task.dueDate, task.dueTime)}</p>
                   <p>Priority: {task.priority}</p>
                   {task.fileName && (
                     <p>File: {task.fileName}</p>
