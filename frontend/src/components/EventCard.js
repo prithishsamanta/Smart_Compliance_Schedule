@@ -9,12 +9,11 @@ function EventCard({ event, onClose, onStatusChange }) {
 
   async function handleStatusChange(newStatus) {
     try {
-      // Create a complete task object with all required fields
       const updatedTaskData = {
         id: event.id,
         heading: event.title,
         description: event.description,
-        dueDate: event.start.toISOString().split('T')[0], // Convert Date to YYYY-MM-DD
+        dueDate: event.start.toISOString().split('T')[0], 
         dueTime: event.start.toTimeString().split(' ')[0], 
         status: newStatus,
         priority: event.priority,

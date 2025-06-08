@@ -10,7 +10,7 @@ const PRIORITY_OPTIONS = Array.from({ length: 9 }, (_, i) => i + 1);
 
 function AddTaskPage() {
   const navigate = useNavigate();
-  // State for each field in the form
+
   const [heading, setHeading] = useState("");
   const [description, setDescription] = useState("");
   const [dueDate, setDueDate] = useState("");
@@ -22,7 +22,12 @@ function AddTaskPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const today = new Date().toISOString().split('T')[0];
+  // today's date in YYYY-MM-DD format
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, '0');
+  const day = String(today.getDate()).padStart(2, '0');
+  const todayFormatted = `${year}-${month}-${day}`;
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -105,7 +110,7 @@ function AddTaskPage() {
           <input
             type="date"
             value={dueDate}
-            min={today}
+            min={todayFormatted}
             onChange={e => setDueDate(e.target.value)}
             required
           />
