@@ -27,7 +27,7 @@ public class Task {
     private String fileType;
 
     @Lob
-    @Column(name = "file_data")
+    @Column(name = "file_data", columnDefinition = "LONGBLOB")
     private byte[] fileData;
 
     @Column(name = "due_date", nullable = false)

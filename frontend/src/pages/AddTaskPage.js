@@ -47,6 +47,11 @@ function AddTaskPage() {
         people: peopleList
       };
 
+      const formData = new FormData();
+      formData.append('task', JSON.stringify(taskData));
+      if (file) {
+        formData.append('file', file);
+      }
       const savedTask = await TaskService.createTask(taskData, file);
       console.log('Task created:', savedTask);
       

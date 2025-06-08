@@ -86,6 +86,7 @@ public class TaskController {
             Task savedTask = taskRepository.save(task);
             return ResponseEntity.ok(savedTask);
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.badRequest().body("Error creating task: " + e.getMessage());
         }
     }
