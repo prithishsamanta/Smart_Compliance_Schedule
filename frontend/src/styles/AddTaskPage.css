@@ -1,64 +1,140 @@
 .add-task-page {
-    padding: 5px;
-  }
-  
-  .add-task-form {
+    padding: 20px;
+    background-color: #f8f9fa;
+    min-height: 100vh;
+}
+
+.add-task-form {
     display: flex;
     flex-direction: column;
-    max-width: 420px;
+    max-width: 500px;
     margin: 0 auto;
-    background: #f3f3f3;
+    background: #ffffff;
     border-radius: 12px;
-    padding: 24px 24px 24px 24px;
-    box-shadow: 0 2px 10px #111;
-  }
-  
-  .add-task-form label {
+    padding: 32px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+}
+
+.add-task-form:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.add-task-form label {
     margin-bottom: 18px;
-    font-weight: bold;
+    font-weight: 500;
     width: 100%;
-  }
-  
-  .add-task-form input,
-  .add-task-form textarea,
-  .add-task-form select {
-    margin-top: 4px;
+    color: #2c3e50;
+}
+
+.add-task-form input,
+.add-task-form textarea,
+.add-task-form select {
+    margin-top: 8px;
     margin-bottom: 8px;
-    padding: 8px;
-    border-radius: 6px;
-    border: 1.5px solid #bbb;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
     font-size: 1rem;
     width: 100%;
     box-sizing: border-box;
-    background: #fff;
-  }
-  
-  .add-task-form button {
-    padding: 10px 18px;
-    background: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    font-size: 1rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-  
-  .add-task-form button:hover {
-    background: #0056b3;
-  }
-  
-  .add-task-form-label {
-    margin-bottom: 18px;
-    font-weight: bold;
-    width: 100%;
-    margin-right: 10px;
-  }
+    background: #ffffff;
+    color: #2c3e50;
+    transition: all 0.2s ease;
+}
 
-  .task-list-heading {
+.add-task-form input:focus,
+.add-task-form textarea:focus,
+.add-task-form select:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.add-task-form textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.add-task-form button {
+    padding: 12px 24px;
+    background: #007bff;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: 16px;
+}
+
+.add-task-form button:hover {
+    background: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.add-task-form button:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.add-task-form-label {
+    margin-bottom: 18px;
+    font-weight: 500;
+    width: 100%;
+    color: #2c3e50;
+}
+
+.task-list-heading {
     text-align: center;
     margin-top: 20px;
     margin-bottom: 20px;
     font-size: 2rem;
-  }
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+.error-message {
+    color: #dc3545;
+    background-color: #f8d7da;
+    padding: 12px;
+    margin: 10px auto;
+    border-radius: 6px;
+    text-align: center;
+    border: 1px solid #f5c6cb;
+    max-width: 500px;
+}
+
+/* File input styling */
+.add-task-form input[type="file"] {
+    padding: 8px;
+    background: #f8f9fa;
+    border: 2px dashed #e9ecef;
+    cursor: pointer;
+}
+
+.add-task-form input[type="file"]:hover {
+    border-color: #007bff;
+    background: #f1f7ff;
+}
+
+/* Date and Time input styling */
+.add-task-form input[type="date"],
+.add-task-form input[type="time"] {
+    color-scheme: light;
+}
+
+/* Select dropdown styling */
+.add-task-form select {
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    padding-right: 40px;
+}
