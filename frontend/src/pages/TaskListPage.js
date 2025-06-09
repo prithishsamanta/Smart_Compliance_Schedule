@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import Taskbar from "../components/Taskbar";
 import "../styles/TaskListPage.css";
 import { TaskService } from "../services/TaskService";
+import DownloadIcon from '@mui/icons-material/Download';
+import { IconButton } from '@mui/material';
 
 function TaskListPage() {
   const STATUS_OPTIONS = ["In Progress", "Completed", "Over Due"];
@@ -24,6 +26,33 @@ function TaskListPage() {
       setLoading(false);
     }
   }
+
+  const handleDownload = async (task) => {
+    try {
+      if (!task.fileName) {
+        setError('No file available to download');
+        return;
+      }
+
+      const response = await TaskService.downloadFile(task.id);
+      if (!response.ok) {
+        throw new Error('Failed to download file');
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', task.fileName);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      setError(err.message || 'Failed to download file');
+      console.error('Error downloading file:', err);
+    }
+  };
 
   async function handleStatusChange(taskId, newStatus) {
     try {
@@ -106,9 +135,19 @@ function TaskListPage() {
                   <p>{task.description}</p>
                   <p>Due: {formatDateTime(task.dueDate, task.dueTime)}</p>
                   <p>Priority: {task.priority}</p>
-                  {task.fileName && (
-                    <p>File: {task.fileName}</p>
-                  )}
+                  <p className="file-info">
+                    <strong>File:</strong> {task.fileName}
+                    {task.fileName && (
+                      <IconButton 
+                        onClick={() => handleDownload(task)}
+                        size="small"
+                        sx={{ marginLeft: 1 }}
+                        title="Download file"
+                      >
+                        <DownloadIcon />
+                      </IconButton>
+                    )}
+                  </p>
                   {task.people && task.people.length > 0 && (
                     <p>People: {task.people.join(", ")}</p>
                   )}
