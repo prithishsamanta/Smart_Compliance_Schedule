@@ -91,5 +91,26 @@ export const TaskService = {
             console.error('Error deleting task:', error);
             throw error;
         }
+    },
+
+    // Download a file
+    downloadFile: async (taskId) => {
+        try {
+            const response = await fetch(`${API_URL}/${taskId}/download`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+            
+            if (!response.ok) {
+                throw new Error('Failed to download file');
+            }
+            
+            return response;
+        } catch (error) {
+            console.error('Error downloading file:', error);
+            throw error;
+        }
     }
 }; 

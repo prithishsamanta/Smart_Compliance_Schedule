@@ -110,4 +110,17 @@ public class TaskController {
     public void deleteTask(@PathVariable Long id) {
         taskRepository.deleteById(id);
     }
+
+    @GetMapping("/{id}/download")
+    public ResponseEntity<byte[]> downloadFile(@PathVariable Long id) {
+        Task task = taskRepository.findById(id).orElse(null);
+        if (task == null || task.getFileData() == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok()
+                .header("Content-Disposition", "attachment; filename=\"" + task.getFileName() + "\"")
+                .header("Content-Type", task.getFileType())
+                .body(task.getFileData());
+    }
 }

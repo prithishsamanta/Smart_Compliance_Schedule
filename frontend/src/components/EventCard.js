@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import "../styles/EventCard.css";
 import { TaskService } from "../services/TaskService";
+import DownloadIcon from '@mui/icons-material/Download';
+import { IconButton } from '@mui/material';
 
 function EventCard({ event, onClose, onStatusChange }) {
   const STATUS_OPTIONS = ["In Progress", "Completed", "Over Due"];
@@ -33,6 +35,33 @@ function EventCard({ event, onClose, onStatusChange }) {
     }
   }
 
+  const handleDownload = async () => {
+    try {
+      if (!event.fileName) {
+        setError('No file available to download');
+        return;
+      }
+
+      const response = await TaskService.downloadFile(event.id);
+      if (!response.ok) {
+        throw new Error('Failed to download file');
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', event.fileName);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      setError(err.message || 'Failed to download file');
+      console.error('Error downloading file:', err);
+    }
+  };
+
   if (!event) return null;
 
   return (
@@ -41,7 +70,19 @@ function EventCard({ event, onClose, onStatusChange }) {
         <button className="eventcard-close" onClick={onClose}>×</button>
         <h2>{event.title}</h2>
         <p><strong>Description:</strong> {event.description}</p>
-        <p><strong>File:</strong> {event.fileName}</p>
+        <p className="file-info">
+          <strong>File:</strong> {event.fileName}
+          {event.fileName && (
+            <IconButton 
+              onClick={handleDownload}
+              size="small"
+              sx={{ marginLeft: 1 }}
+              title="Download file"
+            >
+              <DownloadIcon />
+            </IconButton>
+          )}
+        </p>
         <p><strong>Status:</strong> {currentStatus}</p>
         <p><strong>Priority:</strong> {event.priority}</p>
         <p><strong>People:</strong> {event.people && event.people.join(", ")}</p>
