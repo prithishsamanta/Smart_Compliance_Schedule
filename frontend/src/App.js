@@ -2,6 +2,7 @@ import logo from './logo.svg';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import AddTaskPage from './pages/AddTaskPage';
+import EditTaskPage from './pages/EditTaskPage';
 import TaskListPage from './pages/TaskListPage';
 import CalendarPage from './pages/CalendarPage';
 import Taskbar from './components/Taskbar';
@@ -18,6 +19,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/addTask" element={<AddTaskPage />} />
+          <Route path="/editTask/:id" element={<EditTaskPage />} />
           <Route path="/viewTask" element={<TaskListPage />} />
           <Route path="/viewCalendar" element={<CalendarPage />} />
         </Routes>

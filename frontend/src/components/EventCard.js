@@ -2,12 +2,16 @@ import React, { useState } from "react";
 import "../styles/EventCard.css";
 import { TaskService } from "../services/TaskService";
 import DownloadIcon from '@mui/icons-material/Download';
+import EditIcon from '@mui/icons-material/Edit';
 import { IconButton } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import CloseIcon from '@mui/icons-material/Close';
 
-function EventCard({ event, onClose, onStatusChange }) {
+function EventCard({ event, onClose, onStatusChange, onDownload }) {
   const STATUS_OPTIONS = ["In Progress", "Completed", "Over Due"];
   const [currentStatus, setCurrentStatus] = useState(event.status);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   async function handleStatusChange(newStatus) {
     try {
@@ -15,8 +19,8 @@ function EventCard({ event, onClose, onStatusChange }) {
         id: event.id,
         heading: event.title,
         description: event.description,
-        dueDate: event.start.toISOString().split('T')[0], 
-        dueTime: event.start.toTimeString().split(' ')[0], 
+        dueDate: event.start ? event.start.toISOString().split('T')[0] : '',
+        dueTime: event.start ? event.start.toTimeString().split(' ')[0] : '',
         status: newStatus,
         priority: event.priority,
         people: event.people || [],
@@ -35,71 +39,83 @@ function EventCard({ event, onClose, onStatusChange }) {
     }
   }
 
+  const handleEdit = () => {
+    const formattedEvent = {
+      ...event,
+      dueDate: event.start ? event.start.toISOString().split('T')[0] : '',
+      dueTime: event.start ? event.start.toTimeString().split(' ')[0] : ''
+    };
+    navigate(`/editTask/${event.id}`, { state: { event: formattedEvent } });
+  };
+
   const handleDownload = async () => {
-    try {
-      if (!event.fileName) {
-        setError('No file available to download');
-        return;
-      }
-
-      const response = await TaskService.downloadFile(event.id);
-      if (!response.ok) {
-        throw new Error('Failed to download file');
-      }
-
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', event.fileName);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      window.URL.revokeObjectURL(url);
-    } catch (err) {
-      setError(err.message || 'Failed to download file');
-      console.error('Error downloading file:', err);
+    if (onDownload) {
+      onDownload(event.id);
     }
   };
 
   if (!event) return null;
 
   return (
-    <div className="eventcard-modal">
-      <div className="eventcard-content">
-        <button className="eventcard-close" onClick={onClose}>×</button>
-        <h2>{event.title}</h2>
-        <p><strong>Description:</strong> {event.description}</p>
-        <p className="file-info">
-          <strong>File:</strong> {event.fileName}
-          {event.fileName && (
-            <IconButton 
-              onClick={handleDownload}
+    <div className="eventcard-overlay" onClick={onClose}>
+      <div className="eventcard-modal" onClick={e => e.stopPropagation()}>
+        <div className="eventcard-header">
+          <h3>{event.title}</h3>
+          <div className="eventcard-actions">
+            <IconButton
+              className="eventcard-edit"
+              onClick={handleEdit}
               size="small"
-              sx={{ marginLeft: 1 }}
-              title="Download file"
             >
-              <DownloadIcon />
+              <EditIcon />
             </IconButton>
-          )}
-        </p>
-        <p><strong>Status:</strong> {currentStatus}</p>
-        <p><strong>Priority:</strong> {event.priority}</p>
-        <p><strong>People:</strong> {event.people && event.people.join(", ")}</p>
-        <p><strong>Due Date:</strong> {event.start && event.start.toLocaleString()}</p>
-        {error && <p className="error-message">{error}</p>}
-        <div className="status-changer-container">
-          <select
-            value={currentStatus}
-            onChange={e => handleStatusChange(e.target.value)}
-            className="status-changer"
-          >
-            {STATUS_OPTIONS.map(statusOption => (
-              <option key={statusOption} value={statusOption}>
-                {statusOption}
-              </option>
-            ))}
-          </select>
+            <IconButton
+              className="eventcard-close"
+              onClick={onClose}
+              size="small"
+            >
+              <CloseIcon />
+            </IconButton>
+          </div>
+        </div>
+        <div className="eventcard-content">
+          <p className="eventcard-description"><strong>{event.description}</strong></p>
+          <div className="eventcard-details">
+            <p><strong>Due Date:</strong> {event.start && event.start.toLocaleDateString()}</p>
+            <p><strong>Due Time:</strong> {event.start && event.start.toLocaleTimeString()}</p>
+            <p><strong>Status:</strong> {currentStatus}</p>
+            <p><strong>Priority:</strong> {event.priority}</p>
+            {event.people && event.people.length > 0 && (
+              <p><strong>People Involved:</strong> {event.people.join(', ')}</p>
+            )}
+            <p className="file-info">
+              <strong>File:</strong> {event.fileName}
+              {event.fileName && (
+                <IconButton 
+                  onClick={handleDownload}
+                  size="small"
+                  className="eventcard-download"
+                  title="Download file"
+                >
+                  <DownloadIcon />
+                </IconButton>
+              )}
+            </p>
+          </div>
+          {error && <p className="error-message">{error}</p>}
+          <div className="status-changer-container">
+            <select
+              value={currentStatus}
+              onChange={e => handleStatusChange(e.target.value)}
+              className="status-changer"
+            >
+              {STATUS_OPTIONS.map(statusOption => (
+                <option key={statusOption} value={statusOption}>
+                  {statusOption}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
       </div>
     </div>

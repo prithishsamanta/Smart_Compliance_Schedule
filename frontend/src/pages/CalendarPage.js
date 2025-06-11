@@ -72,6 +72,28 @@ function CalendarPage() {
     );
   };
 
+  const handleDownload = async (taskId) => {
+    try {
+      const response = await TaskService.downloadFile(taskId);
+      if (!response.ok) {
+        throw new Error('Failed to download file');
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', selectedEvent.fileName);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Error downloading file:', err);
+      setError(err.message || 'Failed to download file');
+    }
+  };
+
   // Convert tasks to events format for the calendar
   const events = tasks.map(task => {
     // Create a valid date string by combining date and time
@@ -140,6 +162,7 @@ function CalendarPage() {
           event={selectedEvent} 
           onClose={() => setSelectedEvent(null)}
           onStatusChange={handleStatusChange}
+          onDownload={handleDownload}
         />
       )}
     </div>
