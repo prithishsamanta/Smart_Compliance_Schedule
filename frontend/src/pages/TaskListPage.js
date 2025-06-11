@@ -4,6 +4,8 @@ import "../styles/TaskListPage.css";
 import { TaskService } from "../services/TaskService";
 import DownloadIcon from '@mui/icons-material/Download';
 import { IconButton } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import { useNavigate } from "react-router-dom";
 
 function TaskListPage() {
   const STATUS_OPTIONS = ["In Progress", "Completed", "Over Due"];
@@ -113,6 +115,12 @@ function TaskListPage() {
     grouped[status].sort((a, b) => a.priority - b.priority);
   });
 
+  const navigate = useNavigate();
+
+  const handleEdit = (taskId) => {
+    navigate(`/editTask/${taskId}`);
+  };
+
   if (loading) {
     return <div className="loading">Loading tasks...</div>;
   }
@@ -131,38 +139,49 @@ function TaskListPage() {
             <ul className="tasks-list">
               {grouped[status].map(task => (
                 <li key={task.id} className="task-item">
-                  <strong>{task.heading}</strong>
-                  <p>{task.description}</p>
-                  <p>Due: {formatDateTime(task.dueDate, task.dueTime)}</p>
-                  <p>Priority: {task.priority}</p>
-                  <p className="file-info">
-                    <strong>File:</strong> {task.fileName}
-                    {task.fileName && (
-                      <IconButton 
-                        onClick={() => handleDownload(task)}
-                        size="small"
-                        sx={{ marginLeft: 1 }}
-                        title="Download file"
+                  <div className="task-card">
+                    <div className="task-card-header">
+                      <h3>{task.heading}</h3>
+                      <div className="task-card-actions">
+                        <IconButton
+                          className="task-card-edit"
+                          onClick={() => handleEdit(task.id)}
+                          size="small"
+                        >
+                          <EditIcon />
+                        </IconButton>
+                        {task.fileName && (
+                          <IconButton
+                            className="task-card-download"
+                            onClick={() => handleDownload(task)}
+                            size="small"
+                          >
+                            <DownloadIcon />
+                          </IconButton>
+                        )}
+                      </div>
+                    </div>
+                    <p className="task-card-description">{task.description}</p>
+                    <div className="task-card-details">
+                      <p><strong>Due Date:</strong> {formatDateTime(task.dueDate, task.dueTime)}</p>
+                      <p><strong>Priority:</strong> {task.priority}</p>
+                      {task.people && task.people.length > 0 && (
+                        <p><strong>People Involved:</strong> {task.people.join(', ')}</p>
+                      )}
+                      {task.fileName && (
+                        <p><strong>File:</strong> {task.fileName}</p>
+                      )}
+                    </div>
+                    <div className="task-card-status">
+                      <select
+                        value={task.status}
+                        onChange={(e) => handleStatusChange(task.id, e.target.value)}
                       >
-                        <DownloadIcon />
-                      </IconButton>
-                    )}
-                  </p>
-                  {task.people && task.people.length > 0 && (
-                    <p>People: {task.people.join(", ")}</p>
-                  )}
-                  <div className="status-changer-container">
-                    <select
-                      value={task.status}
-                      onChange={e => handleStatusChange(task.id, e.target.value)}
-                      className="status-changer"
-                    >
-                      {STATUS_OPTIONS.map(statusOption => (
-                        <option key={statusOption} value={statusOption}>
-                          {statusOption}
-                        </option>
-                      ))}
-                    </select>
+                        {STATUS_OPTIONS.map(option => (
+                          <option key={option} value={option}>{option}</option>
+                        ))}
+                      </select>
+                    </div>
                   </div>
                 </li>
               ))}
