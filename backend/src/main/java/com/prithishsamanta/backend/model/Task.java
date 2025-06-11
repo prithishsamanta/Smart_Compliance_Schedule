@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "tasks")
@@ -28,6 +29,7 @@ public class Task {
 
     @Lob
     @Column(name = "file_data", columnDefinition = "LONGBLOB")
+    @JsonIgnore
     private byte[] fileData;
 
     @Column(name = "due_date", nullable = false)

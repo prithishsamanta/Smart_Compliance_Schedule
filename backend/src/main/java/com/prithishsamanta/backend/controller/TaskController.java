@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/tasks")
@@ -24,7 +25,12 @@ public class TaskController {
 
     @GetMapping("/dueDate")
     public List<Task> getTasksByDueDate() {
-        return taskService.getTasksByDueDate();
+        List<Task> tasks = taskService.getTasksByDueDate();
+        System.out.println("Tasks with files: " + tasks.stream()
+            .filter(task -> task.getFileName() != null)
+            .map(task -> task.getId() + ": " + task.getFileName())
+            .collect(Collectors.joining(", ")));
+        return tasks;
     }
 
     @GetMapping
@@ -53,9 +59,26 @@ public class TaskController {
         }
     }
 
-    @PutMapping("/{id}")
-    public Task updateTask(@PathVariable Long id, @RequestBody Task updatedTask) {
-        return taskService.updateTask(id, updatedTask);
+    @PutMapping(value = "/{id}", consumes = "multipart/form-data")
+    public ResponseEntity<?> updateTaskWithFile(
+            @PathVariable Long id,
+            @RequestParam("task") String taskJson,
+            @RequestParam(value = "file", required = false) MultipartFile file) {
+        try {
+            Task updatedTask = objectMapper.readValue(taskJson, Task.class);
+
+            if (file != null && !file.isEmpty()) {
+                updatedTask.setFileName(file.getOriginalFilename());
+                updatedTask.setFileType(file.getContentType());
+                updatedTask.setFileData(file.getBytes());
+            }
+
+            Task savedTask = taskService.updateTask(id, updatedTask);
+            return ResponseEntity.ok(savedTask);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body("Error updating task: " + e.getMessage());
+        }
     }
 
     @DeleteMapping("/{id}")

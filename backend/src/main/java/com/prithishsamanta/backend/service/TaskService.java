@@ -56,7 +56,13 @@ public class TaskService {
         task.setPeople(updatedTask.getPeople());
         task.setPriority(updatedTask.getPriority());
         task.setStatus(updatedTask.getStatus());
-        
+
+        if (updatedTask.getFileData() != null && updatedTask.getFileName() != null && updatedTask.getFileType() != null) {
+            task.setFileData(updatedTask.getFileData());
+            task.setFileName(updatedTask.getFileName());
+            task.setFileType(updatedTask.getFileType());
+        }
+
         updateTaskStatus(task);
         return taskRepository.save(task);
     }

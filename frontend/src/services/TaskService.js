@@ -60,14 +60,17 @@ export const TaskService = {
     },
 
     // Update a task
-    updateTask: async (id, taskData) => {
+    updateTask: async (id, taskData, file) => {
         try {
+            const formData = new FormData();
+            formData.append('task', JSON.stringify(taskData));
+            if (file) {
+                formData.append('file', file);
+            }
+
             const response = await fetch(`${API_URL}/${id}`, {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(taskData)
+                body: formData
             });
 
             if (!response.ok) throw new Error('Failed to update task');
