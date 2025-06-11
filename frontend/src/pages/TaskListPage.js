@@ -20,6 +20,7 @@ function TaskListPage() {
   async function fetchTasks() {
     try {
       const fetchedTasks = await TaskService.getTasksByCurrentDate();
+      console.log('Fetched tasks:', fetchedTasks);
       setTasks(fetchedTasks);
     } catch (err) {
       setError(err.message || 'Failed to fetch tasks');
@@ -143,54 +144,62 @@ function TaskListPage() {
           <div key={status} className="tasks-column">
             <h3 className="tasks-column-heading">{status}</h3>
             <ul className="tasks-list">
-              {grouped[status].map(task => (
-                <li key={task.id} className="task-item">
-                  <div className="task-card">
-                    <div className="task-card-header">
-                      <h3>{task.heading}</h3>
-                      <div className="task-card-actions">
-                        <IconButton
-                          className="task-card-edit"
-                          onClick={() => handleEdit(task)}
-                          size="small"
-                        >
-                          <EditIcon />
-                        </IconButton>
-                        {task.fileName && (
+              {grouped[status].map(task => {
+                console.log('Task file info:', { id: task.id, fileName: task.fileName });
+                return (
+                  <li key={task.id} className="task-item">
+                    <div className="task-card">
+                      <div className="task-card-header">
+                        <h3>{task.heading}</h3>
+                        <div className="task-card-actions">
                           <IconButton
-                            className="task-card-download"
-                            onClick={() => handleDownload(task)}
+                            className="task-card-edit"
+                            onClick={() => handleEdit(task)}
                             size="small"
+                            title="Edit task"
                           >
-                            <DownloadIcon />
+                            <EditIcon />
                           </IconButton>
+                        </div>
+                      </div>
+                      <p className="task-card-description"><strong>{task.description}</strong></p>
+                      <div className="task-card-details">
+                        <p><strong>Due Date:</strong> {formatDateTime(task.dueDate, task.dueTime)}</p>
+                        <p><strong>Priority:</strong> {task.priority}</p>
+                        {task.people && task.people.length > 0 && (
+                          <p><strong>People Involved:</strong> {task.people.join(', ')}</p>
                         )}
+                        <p>
+                          <strong>File:</strong>
+                          <span>
+                            {task.fileName}
+                            {task.fileName && (
+                              <IconButton
+                                className="task-card-download"
+                                onClick={() => handleDownload(task)}
+                                size="small"
+                                title="Download file"
+                              >
+                                <DownloadIcon />
+                              </IconButton>
+                            )}
+                          </span>
+                        </p>
+                      </div>
+                      <div className="task-card-status">
+                        <select
+                          value={task.status}
+                          onChange={(e) => handleStatusChange(task.id, e.target.value)}
+                        >
+                          {STATUS_OPTIONS.map(option => (
+                            <option key={option} value={option}>{option}</option>
+                          ))}
+                        </select>
                       </div>
                     </div>
-                    <p className="task-card-description">{task.description}</p>
-                    <div className="task-card-details">
-                      <p><strong>Due Date:</strong> {formatDateTime(task.dueDate, task.dueTime)}</p>
-                      <p><strong>Priority:</strong> {task.priority}</p>
-                      {task.people && task.people.length > 0 && (
-                        <p><strong>People Involved:</strong> {task.people.join(', ')}</p>
-                      )}
-                      {task.fileName && (
-                        <p><strong>File:</strong> {task.fileName}</p>
-                      )}
-                    </div>
-                    <div className="task-card-status">
-                      <select
-                        value={task.status}
-                        onChange={(e) => handleStatusChange(task.id, e.target.value)}
-                      >
-                        {STATUS_OPTIONS.map(option => (
-                          <option key={option} value={option}>{option}</option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-                </li>
-              ))}
+                  </li>
+                );
+              })}
             </ul>
           </div>
         ))}

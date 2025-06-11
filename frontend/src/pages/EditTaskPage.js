@@ -69,7 +69,6 @@ function EditTaskPage() {
 
     try {
       const peopleList = people.split(",").map(email => email.trim()).filter(Boolean);
-      
       const taskData = {
         id: task.id,
         heading,
@@ -78,15 +77,9 @@ function EditTaskPage() {
         dueTime,
         status,
         priority,
-        people: peopleList,
-        fileName: task.fileName,
-        fileType: task.fileType
+        people: peopleList
       };
-
-      const updatedTask = await TaskService.updateTask(id, taskData);
-      console.log('Task updated:', updatedTask);
-      
-      // Navigate back to task list
+      await TaskService.updateTask(id, taskData, file);
       navigate('/viewTask');
     } catch (err) {
       setError(err.message || 'Failed to update task');
@@ -175,6 +168,20 @@ function EditTaskPage() {
               <option key={option} value={option}>{option}</option>
             ))}
           </select>
+        </label>
+
+        <label className="add-task-form-label">
+          Attach File:
+          <input
+            type="file"
+            accept=".txt,.doc,.docx,.jpeg,.jpg,.png,.pdf"
+            onChange={e => setFile(e.target.files[0])}
+          />
+          {task.fileName && !file && (
+            <span style={{ marginLeft: '8px', color: '#888', fontSize: '0.9em' }}>
+              (Current: {task.fileName})
+            </span>
+          )}
         </label>
 
         <button type="submit" disabled={loading}>

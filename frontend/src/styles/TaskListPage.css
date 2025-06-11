@@ -168,30 +168,29 @@
 }
 
 .task-card {
-    background-color: #ffffff;
-    border-radius: 8px;
-    padding: 16px;
-    margin-bottom: 16px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 20px 20px 16px 20px;
+    margin-bottom: 15px;
+    transition: box-shadow 0.2s, border-color 0.2s;
 }
 
 .task-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    border-color: #bdbdbd;
 }
 
 .task-card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 12px;
+    margin-bottom: 14px;
 }
 
 .task-card-header h3 {
     margin: 0;
-    font-size: 1.2rem;
-    color: #333;
+    font-size: 1.25rem;
+    color: #222;
+    font-weight: 700;
 }
 
 .task-card-actions {
@@ -214,9 +213,10 @@
 }
 
 .task-card-description {
-    color: #666;
-    margin-bottom: 12px;
-    line-height: 1.4;
+    color: #4a4a4a;
+    margin-bottom: 10px;
+    font-size: 1.05em;
+    line-height: 1.5;
 }
 
 .task-card-details {
@@ -225,12 +225,47 @@
 
 .task-card-details p {
     margin: 4px 0;
-    color: #666;
+    color: #444;
+    display: flex;
+    align-items: baseline;
+    font-size: 1em;
+    font-weight: 400;
+    gap: 8px;
 }
 
 .task-card-details strong {
-    color: #333;
-    margin-right: 8px;
+    color: #222;
+    margin-right: 4px;
+    font-weight: 600;
+    min-width: unset;
+    text-align: left;
+    flex-shrink: 0;
+    line-height: 1;
+    display: inline-block;
+}
+
+.task-card-details span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.task-card-download {
+    margin-left: 4px;
+    display: flex;
+    align-items: center;
+    padding: 2px;
+    color: #666;
+    transition: color 0.2s ease-in-out;
+    font-size: 1.1em;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.task-card-download:hover {
+    color: #4caf50;
+    background-color: rgba(76, 175, 80, 0.08);
 }
 
 .task-card-status {
