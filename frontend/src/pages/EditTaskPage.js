@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import "../styles/AddTaskPage.css";
 import { TaskService } from "../services/TaskService";
 
@@ -9,6 +9,7 @@ const PRIORITY_OPTIONS = Array.from({ length: 9 }, (_, i) => i + 1);
 function EditTaskPage() {
   const navigate = useNavigate();
   const { id } = useParams();
+  const location = useLocation();
   const [task, setTask] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -23,8 +24,23 @@ function EditTaskPage() {
   const [people, setPeople] = useState("");
 
   useEffect(() => {
-    fetchTask();
-  }, [id]);
+    // If we have event data from navigation state, use it
+    if (location.state?.event) {
+      const event = location.state.event;
+      setTask(event);
+      setHeading(event.title);
+      setDescription(event.description);
+      setDueDate(event.dueDate);
+      setDueTime(event.dueTime);
+      setStatus(event.status);
+      setPriority(event.priority);
+      setPeople(event.people ? event.people.join(", ") : "");
+      setLoading(false);
+    } else {
+      // Otherwise fetch from the server
+      fetchTask();
+    }
+  }, [id, location.state]);
 
   async function fetchTask() {
     try {

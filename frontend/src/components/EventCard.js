@@ -19,8 +19,8 @@ function EventCard({ event, onClose, onStatusChange, onDownload }) {
         id: event.id,
         heading: event.title,
         description: event.description,
-        dueDate: event.start.toISOString().split('T')[0], 
-        dueTime: event.start.toTimeString().split(' ')[0], 
+        dueDate: event.start ? event.start.toISOString().split('T')[0] : '',
+        dueTime: event.start ? event.start.toTimeString().split(' ')[0] : '',
         status: newStatus,
         priority: event.priority,
         people: event.people || [],
@@ -40,7 +40,12 @@ function EventCard({ event, onClose, onStatusChange, onDownload }) {
   }
 
   const handleEdit = () => {
-    navigate(`/editTask/${event.id}`);
+    const formattedEvent = {
+      ...event,
+      dueDate: event.start ? event.start.toISOString().split('T')[0] : '',
+      dueTime: event.start ? event.start.toTimeString().split(' ')[0] : ''
+    };
+    navigate(`/editTask/${event.id}`, { state: { event: formattedEvent } });
   };
 
   const handleDownload = async () => {

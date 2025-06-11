@@ -117,8 +117,14 @@ function TaskListPage() {
 
   const navigate = useNavigate();
 
-  const handleEdit = (taskId) => {
-    navigate(`/editTask/${taskId}`);
+  const handleEdit = (task) => {
+    const formattedTask = {
+      ...task,
+      title: task.heading,
+      dueDate: task.dueDate,
+      dueTime: task.dueTime
+    };
+    navigate(`/editTask/${task.id}`, { state: { event: formattedTask } });
   };
 
   if (loading) {
@@ -145,7 +151,7 @@ function TaskListPage() {
                       <div className="task-card-actions">
                         <IconButton
                           className="task-card-edit"
-                          onClick={() => handleEdit(task.id)}
+                          onClick={() => handleEdit(task)}
                           size="small"
                         >
                           <EditIcon />
