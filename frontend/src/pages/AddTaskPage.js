@@ -37,23 +37,22 @@ function AddTaskPage() {
     try {
       const peopleList = people.split(",").map(email => email.trim()).filter(Boolean);
       
+      // Fix time format - add seconds if not present
+      const formattedTime = dueTime.includes(':') && dueTime.split(':').length === 2 
+        ? dueTime + ":00" 
+        : dueTime;
+      
       const taskData = {
         heading,
         description,
         dueDate,
-        dueTime,
+        dueTime: formattedTime,
         status,
         priority,
         people: peopleList
       };
 
-      const formData = new FormData();
-      formData.append('task', JSON.stringify(taskData));
-      if (file) {
-        formData.append('file', file);
-      }
       const savedTask = await TaskService.createTask(taskData, file);
-      console.log('Task created:', savedTask);
       
       // Reset form
       setHeading("");

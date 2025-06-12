@@ -28,10 +28,16 @@ function EditTaskPage() {
     if (location.state?.event) {
       const event = location.state.event;
       setTask(event);
-      setHeading(event.title);
+      setHeading(event.title || event.heading);
       setDescription(event.description);
       setDueDate(event.dueDate);
-      setDueTime(event.dueTime);
+      
+      // Fix time format - remove seconds for HTML input (HH:MM format)
+      const timeWithoutSeconds = event.dueTime && event.dueTime.includes(':') 
+        ? event.dueTime.split(':').slice(0, 2).join(':')
+        : event.dueTime;
+      setDueTime(timeWithoutSeconds);
+      
       setStatus(event.status);
       setPriority(event.priority);
       setPeople(event.people ? event.people.join(", ") : "");
@@ -44,19 +50,24 @@ function EditTaskPage() {
 
   async function fetchTask() {
     try {
-      const fetchedTask = await TaskService.getTaskById(id);
-      if (fetchedTask) {
-        setTask(fetchedTask);
-        setHeading(fetchedTask.heading);
-        setDescription(fetchedTask.description);
-        setDueDate(fetchedTask.dueDate);
-        setDueTime(fetchedTask.dueTime);
-        setStatus(fetchedTask.status);
-        setPriority(fetchedTask.priority);
-        setPeople(fetchedTask.people ? fetchedTask.people.join(", ") : "");
-      }
+      const taskData = await TaskService.getTaskById(id);
+      setTask(taskData);
+      setHeading(taskData.heading);
+      setDescription(taskData.description);
+      setDueDate(taskData.dueDate);
+      
+      // Fix time format - remove seconds for HTML input (HH:MM format)
+      const timeWithoutSeconds = taskData.dueTime && taskData.dueTime.includes(':') 
+        ? taskData.dueTime.split(':').slice(0, 2).join(':')
+        : taskData.dueTime;
+      setDueTime(timeWithoutSeconds);
+      
+      setStatus(taskData.status);
+      setPriority(taskData.priority);
+      setPeople(taskData.people ? taskData.people.join(", ") : "");
     } catch (err) {
-      setError(err.message || 'Failed to fetch task');
+      setError('Failed to load task');
+      console.error('Error loading task:', err);
     } finally {
       setLoading(false);
     }
@@ -69,16 +80,23 @@ function EditTaskPage() {
 
     try {
       const peopleList = people.split(",").map(email => email.trim()).filter(Boolean);
+      
+      // Fix time format - add seconds if not present
+      const formattedTime = dueTime.includes(':') && dueTime.split(':').length === 2 
+        ? dueTime + ":00" 
+        : dueTime;
+      
       const taskData = {
         id: task.id,
         heading,
         description,
         dueDate,
-        dueTime,
+        dueTime: formattedTime,
         status,
         priority,
         people: peopleList
       };
+      
       await TaskService.updateTask(id, taskData, file);
       navigate('/viewTask');
     } catch (err) {
@@ -177,7 +195,7 @@ function EditTaskPage() {
             accept=".txt,.doc,.docx,.jpeg,.jpg,.png,.pdf"
             onChange={e => setFile(e.target.files[0])}
           />
-          {task.fileName && !file && (
+          {task && task.fileName && !file && (
             <span style={{ marginLeft: '8px', color: '#888', fontSize: '0.9em' }}>
               (Current: {task.fileName})
             </span>

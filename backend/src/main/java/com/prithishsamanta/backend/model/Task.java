@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
 @Table(name = "tasks")
@@ -32,9 +33,11 @@ public class Task {
     @JsonIgnore
     private byte[] fileData;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "America/New_York")
     @Column(name = "due_date", nullable = false)
     private LocalDate dueDate;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss", timezone = "America/New_York")
     @Column(name = "due_time", nullable = false)
     private LocalTime dueTime;
 
