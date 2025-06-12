@@ -28,7 +28,7 @@ function EventCard({ event, onClose, onStatusChange, onDownload }) {
         fileType: event.fileType
       };
 
-      const updatedTask = await TaskService.updateTask(event.id, updatedTaskData);
+      const updatedTask = await TaskService.updateTask(event.id, updatedTaskData, null);
       setCurrentStatus(newStatus);
       if (onStatusChange) {
         onStatusChange(updatedTask);

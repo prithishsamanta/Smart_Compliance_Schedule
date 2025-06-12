@@ -39,7 +39,10 @@ export const TaskService = {
                 body: formData
             });
 
-            if (!response.ok) throw new Error('Failed to create task');
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error('Failed to create task');
+            }
             return await response.json();
         } catch (error) {
             console.error('Error creating task:', error);
@@ -73,7 +76,10 @@ export const TaskService = {
                 body: formData
             });
 
-            if (!response.ok) throw new Error('Failed to update task');
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error('Failed to update task');
+            }
             return await response.json();
         } catch (error) {
             console.error('Error updating task:', error);

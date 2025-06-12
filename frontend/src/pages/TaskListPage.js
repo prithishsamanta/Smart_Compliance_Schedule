@@ -20,10 +20,10 @@ function TaskListPage() {
   async function fetchTasks() {
     try {
       const fetchedTasks = await TaskService.getTasksByCurrentDate();
-      console.log('Fetched tasks:', fetchedTasks);
       setTasks(fetchedTasks);
     } catch (err) {
       setError(err.message || 'Failed to fetch tasks');
+      console.error('Error fetching tasks:', err);
       setLoading(false);
     } finally {
       setLoading(false);
@@ -65,7 +65,7 @@ function TaskListPage() {
       const updatedTask = await TaskService.updateTask(taskId, {
         ...task,
         status: newStatus
-      });
+      }, null);
 
       setTasks(prev => prev.map(t => 
         t.id === taskId ? updatedTask : t
@@ -79,18 +79,7 @@ function TaskListPage() {
   // Format date and time for display
   const formatDateTime = (dateStr, timeStr) => {
     try {
-      // Parse the date string as UTC to avoid timezone issues
-      const dateParts = dateStr.split("-");
-      const year = parseInt(dateParts[0], 10);
-      const month = parseInt(dateParts[1], 10) - 1; // Month is zero-based
-      const day = parseInt(dateParts[2], 10);
-
-      const timeParts = timeStr ? timeStr.split(":") : ["00", "00", "00"];
-      const hours = parseInt(timeParts[0], 10);
-      const minutes = parseInt(timeParts[1], 10);
-      const seconds = parseInt(timeParts[2], 10);
-
-      const date = new Date(Date.UTC(year, month, day, hours, minutes, seconds));
+      const date = new Date(`${dateStr}T${timeStr}`);
       return `${date.toLocaleDateString()} at ${date.toLocaleTimeString()}`;
     } catch (error) {
       return `${dateStr} at ${timeStr}`;
@@ -169,11 +158,11 @@ function TaskListPage() {
                         {task.people && task.people.length > 0 && (
                           <p><strong>People Involved:</strong> {task.people.join(', ')}</p>
                         )}
-                        <p>
-                          <strong>File:</strong>
-                          <span>
-                            {task.fileName}
-                            {task.fileName && (
+                        {task.fileName && (
+                          <p>
+                            <strong>File:</strong> 
+                            <span>
+                              {task.fileName}
                               <IconButton
                                 className="task-card-download"
                                 onClick={() => handleDownload(task)}
@@ -182,9 +171,9 @@ function TaskListPage() {
                               >
                                 <DownloadIcon />
                               </IconButton>
-                            )}
-                          </span>
-                        </p>
+                            </span>
+                          </p>
+                        )}
                       </div>
                       <div className="task-card-status">
                         <select
