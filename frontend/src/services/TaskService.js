@@ -43,6 +43,7 @@ export const TaskService = {
                 const errorText = await response.text();
                 throw new Error('Failed to create task');
             }
+            
             return await response.json();
         } catch (error) {
             console.error('Error creating task:', error);
