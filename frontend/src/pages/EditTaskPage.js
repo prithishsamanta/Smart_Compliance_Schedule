@@ -23,6 +23,13 @@ function EditTaskPage() {
   const [file, setFile] = useState(null);
   const [people, setPeople] = useState("");
 
+  // today's date in YYYY-MM-DD format
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, '0');
+  const day = String(today.getDate()).padStart(2, '0');
+  const todayFormatted = `${year}-${month}-${day}`;
+
   useEffect(() => {
     // If we have event data from navigation state, use it
     if (location.state?.event) {
@@ -155,6 +162,7 @@ function EditTaskPage() {
           <input
             type="date"
             value={dueDate}
+            min={todayFormatted}
             onChange={e => setDueDate(e.target.value)}
             required
           />
