@@ -94,6 +94,11 @@ function CalendarPage() {
     }
   };
 
+  const handleDelete = (deletedId) => {
+    setTasks(prevTasks => prevTasks.filter(task => task.id !== deletedId));
+    setSelectedEvent(null);
+  };
+
   // Convert tasks to events format for the calendar
   const events = tasks.map(task => {
     // Create a valid date string by combining date and time
@@ -163,6 +168,7 @@ function CalendarPage() {
           onClose={() => setSelectedEvent(null)}
           onStatusChange={handleStatusChange}
           onDownload={handleDownload}
+          onDelete={handleDelete}
         />
       )}
     </div>

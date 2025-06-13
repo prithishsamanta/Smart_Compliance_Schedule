@@ -3,6 +3,7 @@ import Taskbar from "../components/Taskbar";
 import "../styles/TaskListPage.css";
 import { TaskService } from "../services/TaskService";
 import DownloadIcon from '@mui/icons-material/Download';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { IconButton } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import { useNavigate } from "react-router-dom";
@@ -117,6 +118,17 @@ function TaskListPage() {
     navigate(`/editTask/${task.id}`, { state: { event: formattedTask } });
   };
 
+  const handleDelete =  async (task) => {
+    if (!window.confirm('Are you sure you want to delete this event?')) return;
+    try {
+      await TaskService.deleteTask(task.id);
+      setTasks(prevTasks => prevTasks.filter(t => t.id !== task.id));
+    } catch (err) {
+      setError(err.message || 'Failed to delete event');
+      console.error('Error deleting event:', err);
+    }
+  };
+
   if (loading) {
     return <div className="loading">Loading tasks...</div>;
   }
@@ -148,6 +160,14 @@ function TaskListPage() {
                             title="Edit task"
                           >
                             <EditIcon />
+                          </IconButton>
+                          <IconButton
+                            className="eventcard-delete"
+                            onClick={() =>handleDelete(task)}
+                            size="small"
+                            title="Delete event"
+                          >
+                            <DeleteIcon />
                           </IconButton>
                         </div>
                       </div>
