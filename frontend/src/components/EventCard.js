@@ -3,11 +3,12 @@ import "../styles/EventCard.css";
 import { TaskService } from "../services/TaskService";
 import DownloadIcon from '@mui/icons-material/Download';
 import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { IconButton } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import CloseIcon from '@mui/icons-material/Close';
 
-function EventCard({ event, onClose, onStatusChange, onDownload }) {
+function EventCard({ event, onClose, onStatusChange, onDownload, onDelete }) {
   const STATUS_OPTIONS = ["In Progress", "Completed", "Over Due"];
   const [currentStatus, setCurrentStatus] = useState(event.status);
   const [error, setError] = useState("");
@@ -54,6 +55,18 @@ function EventCard({ event, onClose, onStatusChange, onDownload }) {
     }
   };
 
+  const handleDelete = async () => {
+    if (!window.confirm('Are you sure you want to delete this event?')) return;
+    try {
+      await TaskService.deleteTask(event.id);
+      if (onDelete) onDelete(event.id);
+      onClose();
+    } catch (err) {
+      setError(err.message || 'Failed to delete event');
+      console.error('Error deleting event:', err);
+    }
+  };
+
   if (!event) return null;
 
   return (
@@ -68,6 +81,14 @@ function EventCard({ event, onClose, onStatusChange, onDownload }) {
               size="small"
             >
               <EditIcon />
+            </IconButton>
+            <IconButton
+              className="eventcard-delete"
+              onClick={handleDelete}
+              size="small"
+              title="Delete event"
+            >
+              <DeleteIcon />
             </IconButton>
             <IconButton
               className="eventcard-close"
