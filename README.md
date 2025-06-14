@@ -1,4 +1,3 @@
-# Smart Compliance Scheduler
 
 # Smart Compliance Scheduler
 
