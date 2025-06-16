@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.prithishsamanta.backend.model.Task;
+import com.prithishsamanta.backend.service.TaskService;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -23,6 +24,9 @@ public class OpenAiController {
 
     @Autowired
     private OpenAiService openAiService;
+
+    @Autowired
+    private TaskService taskService;
 
     @PostMapping("/create-task")
     public Task createTaskFromPrompt(@RequestBody String userPrompt) throws Exception {
@@ -75,6 +79,8 @@ public class OpenAiController {
         task.setPriority(jsonNode.get("priority").asInt());
         task.setStatus(jsonNode.get("status").asText());
 
-        return task;
+        Task savedTask = taskService.saveTask(task);
+
+        return savedTask;
     }
 }
