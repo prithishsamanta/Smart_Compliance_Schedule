@@ -1,7 +1,6 @@
 import Taskbar from "../components/Taskbar";
 import { useNavigate } from "react-router-dom";
 import HomeCard from "../components/HomeCard";
-import AiTaskChatbot from "../components/AiTaskChatbot";
 
 function HomePage() {
   const navigate = useNavigate();
@@ -15,7 +14,6 @@ function HomePage() {
         <div>
             <HomeCard />
         </div>
-        <AiTaskChatbot/>
     </div>
   );
 }
