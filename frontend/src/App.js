@@ -6,6 +6,7 @@ import EditTaskPage from './pages/EditTaskPage';
 import TaskListPage from './pages/TaskListPage';
 import CalendarPage from './pages/CalendarPage';
 import Taskbar from './components/Taskbar';
+import AiTaskChatbot from './components/AiTaskChatbot';
 // import { TaskProvider } from './context/TaskContext';
 import './App.css';
 
@@ -23,6 +24,7 @@ function App() {
           <Route path="/viewTask" element={<TaskListPage />} />
           <Route path="/viewCalendar" element={<CalendarPage />} />
         </Routes>
+        <AiTaskChatbot/>
       </main>
     </>
   );

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/AiTaskChatbot.css";
+import { FaRobot } from "react-icons/fa";
 
 function AiTaskChatbot() {
   const [messages, setMessages] = useState([
@@ -31,30 +32,53 @@ function AiTaskChatbot() {
     if (!input.trim()) return;
     setMessages((msgs) => [...msgs, { from: "user", text: input }]);
     setIsLoading(true);
-
+  
     try {
       const res = await fetch("http://localhost:8080/api/ai/create-task", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(input)
       });
-      if (!res.ok) throw new Error("Failed to create task");
-      const task = await res.json();
-
-      setMessages((msgs) => [
-        ...msgs,
-        {
-          from: "bot",
-          text: `Task Created!\nHeading: ${task.heading}\nDescription: ${task.description}\nDue: ${task.dueDate} ${task.dueTime}\nStatus: ${task.status}\nPriority: ${task.priority}\nPeople: ${(task.people || []).join(", ")}\nFile: ${task.file}`
-        }
-      ]);
+      if (!res.ok) throw new Error("Failed to get response from AI");
+  
+      const responseData = await res.json();
+  
+      // Check if it's a help response
+      if (responseData.type === "help") {
+        setMessages((msgs) => [
+          ...msgs,
+          {
+            from: "bot",
+            text: responseData.message
+          }
+        ]);
+      } else if (responseData.heading) {
+        // It's a task creation response
+        setMessages((msgs) => [
+          ...msgs,
+          {
+            from: "bot",
+            text: `✅ Task Created Successfully!\n\n📋 Heading: ${responseData.heading}\n📝 Description: ${responseData.description}\n📅 Due: ${responseData.dueDate} at ${responseData.dueTime}\n📊 Status: ${responseData.status}\n⭐ Priority: ${responseData.priority}\n👥 People: ${(responseData.people || []).join(", ") || "None"}`
+          }
+        ]);
+      } else {
+        // Fallback for unexpected response format
+        setMessages((msgs) => [
+          ...msgs,
+          {
+            from: "bot",
+            text: "I received your message but couldn't process it properly. Please try again."
+          }
+        ]);
+      }
     } catch (err) {
-      setMessages((msgs) => [...msgs, { from: "bot", text: "Sorry, I couldn't create the task." }]);
+      console.error("Error:", err);
+      setMessages((msgs) => [...msgs, { from: "bot", text: "Sorry, something went wrong. Please make sure the backend server is running." }]);
     }
-
+  
     setInput("");
     setIsLoading(false);
-  };
+  };  
 
   const toggleChat = () => {
     setIsOpen(!isOpen);
@@ -141,7 +165,7 @@ function AiTaskChatbot() {
         className={`ai-task-chatbot-icon ${isOpen ? 'open' : ''}`}
       >
         <span className="ai-task-chatbot-icon-text">
-          {isOpen ? "×" : "💬"}
+          {isOpen ? "×" : <FaRobot />}
         </span>
       </div>
     </>
