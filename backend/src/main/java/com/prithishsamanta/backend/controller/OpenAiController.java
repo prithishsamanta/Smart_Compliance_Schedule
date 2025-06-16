@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/ai")
 public class OpenAiController {
@@ -31,7 +32,8 @@ public class OpenAiController {
     @PostMapping("/create-task")
     public Task createTaskFromPrompt(@RequestBody String userPrompt) throws Exception {
         // Compose the prompt for GPT-3.5
-        String prompt = "Extract the following fields from this task request and output as JSON: " +
+        String today=LocalDate.now().toString();
+        String prompt = "Extract the following fields from this task request and output as JSON: (today's date is "+today+")" +
                 "heading, description, dueDate (YYYY-MM-DD), dueTime (HH:MM), people (email array), priority (1-9), status(in progress, completed, cancelled).\n" +
                 "Text: \"" + userPrompt + "\"";
 
