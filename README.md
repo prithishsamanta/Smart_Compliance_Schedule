@@ -10,6 +10,8 @@ A full-stack web application designed to help compliance professionals efficient
 - **Task Management**: Create, view, edit, and delete compliance tasks with details including heading, description, due date, due time, status, priority, and people involved.
 - **Table & Calendar Views**: Toggle between a modern table and an interactive calendar to visualize and organize tasks by date, priority, or status.
 - **File Attachments**: Upload and associate relevant documents with tasks for easy reference and record-keeping.
+- **AI Chatbot**: Floating assistant enables users to create tasks or get help through natural language chat, powered by OpenAI GPT-3.5.
+- **Robust Backend Handling**: Backend logic safely distinguishes between structured (task) and unstructured (chat/help) AI replies.
 - **Multi-User Collaboration**: Assign tasks to multiple stakeholders by adding their email addresses.
 - **Responsive UI**: Clean, accessible design with a focus on usability for professionals aged 50+.
 
@@ -20,7 +22,7 @@ A full-stack web application designed to help compliance professionals efficient
 ## Tech Stack
 
 - **Frontend**: React (with React Router, custom CSS)
-- **Backend**: Spring Boot (Java, REST APIs, Hibernate/JPA)
+- **Backend**: Spring Boot (Java, REST APIs, Hibernate/JPA, OpenAI integration)
 - **Database**: MySQL
 
 ---
@@ -59,4 +61,19 @@ mvn spring-boot:run
 cd frontend
 npm install
 npm start
+```
+
+## Configuration Notes
+
+### Add these to your application.properties file
+```bash
+spring.application.name=backend
+spring.datasource.url=jdbc:mysql://localhost:3306/compliance_scheduler
+spring.datasource.username=root
+spring.datasource.password=DB_PASSWORD
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+openai.api.key=OpenAiAPIKey
+openai.model=gpt-3.5-turbo
 ```
