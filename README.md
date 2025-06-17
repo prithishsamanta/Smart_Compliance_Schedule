@@ -65,7 +65,10 @@ npm start
 
 ## Configuration Notes
 
-### Add these to your application.properties file
+### 1. Create an application.properties file in backend/src/main/resources
+### 2. Add these to your application.properties file
+
+
 ```bash
 spring.application.name=backend
 spring.datasource.url=jdbc:mysql://localhost:3306/compliance_scheduler
